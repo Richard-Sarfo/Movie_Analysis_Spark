@@ -1,7 +1,28 @@
 import json
-from pyspark.sql.functions import udf, col
+from pyspark.sql.functions import udf, col, regexp_replace
 from pyspark.sql.types import StringType, ArrayType
-from pyspark.sql.functions import regexp_replace
+
+# UDF to extract value by key from JSON/dict (WITH key parameter)
+@udf(StringType())
+def extract_name(data, key):
+    """Parse JSON/dict and extract value by key, returning None if invalid."""
+    if data is None or data == '':
+        return None
+    
+    try:
+        # If data is a string, parse it as JSON
+        if isinstance(data, str):
+            data = json.loads(data)
+        
+        # If data is a dict, get the specified key
+        if isinstance(data, dict):
+            value = data.get(key)
+            # Return as string for nested objects/lists
+            return json.dumps(value) if value is not None else None
+    except:
+        return None
+    
+    return None
 
 # UDF to extract 'name' values from a list of dictionaries
 @udf(ArrayType(StringType()))
@@ -18,26 +39,6 @@ def extract_data(data):
             return [d.get("name") for d in data if isinstance(d, dict) and "name" in d]
     except:
         return None
-    return None
-
-# UDF to extract value by key from JSON/dict
-@udf(StringType())
-def extract_name(data, key='name'):
-    """Parse JSON/dict and extract value by key, returning None if invalid."""
-    if data is None or data == '':
-        return None
-    
-    try:
-        # If data is a string, parse it as JSON
-        if isinstance(data, str):
-            data = json.loads(data)
-        
-        # If data is a dict, get the specified key
-        if isinstance(data, dict):
-            return data.get(key)
-    except:
-        return None
-    
     return None
 
 # UDF to extract director name from credits

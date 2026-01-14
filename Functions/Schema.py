@@ -41,6 +41,41 @@ def get_tmdb_raw_schema() -> StructType:
         StructField("backdrop_path", StringType(), True)
     ])
 
+    # --- CREDITS SUB-SCHEMAS ---
+    CAST_STRUCT = StructType([
+        StructField("adult", BooleanType(), True),
+        StructField("gender", IntegerType(), True),
+        StructField("id", IntegerType(), True),
+        StructField("known_for_department", StringType(), True),
+        StructField("name", StringType(), True),
+        StructField("original_name", StringType(), True),
+        StructField("popularity", DoubleType(), True),  # Changed from IntegerType to DoubleType
+        StructField("profile_path", StringType(), True),
+        StructField("cast_id", IntegerType(), True),
+        StructField("character", StringType(), True),
+        StructField("credit_id", StringType(), True),
+        StructField("order", IntegerType(), True)
+    ])
+
+    CREW_STRUCT = StructType([
+        StructField("adult", BooleanType(), True),
+        StructField("gender", IntegerType(), True),
+        StructField("id", IntegerType(), True),
+        StructField("known_for_department", StringType(), True),
+        StructField("name", StringType(), True),
+        StructField("original_name", StringType(), True),
+        StructField("popularity", DoubleType(), True),  # Changed from IntegerType to DoubleType
+        StructField("profile_path", StringType(), True),
+        StructField("credit_id", StringType(), True),
+        StructField("department", StringType(), True),
+        StructField("job", StringType(), True)
+    ])
+
+    CREDITS_STRUCT = StructType([
+        StructField("cast", ArrayType(CAST_STRUCT), True),
+        StructField("crew", ArrayType(CREW_STRUCT), True)
+    ])
+
     # --- MASTER RAW SCHEMA ---
     RAW_SCHEMA = StructType([
         StructField("id", LongType(), True),
@@ -64,6 +99,8 @@ def get_tmdb_raw_schema() -> StructType:
         StructField("production_companies", ArrayType(COMPANY_STRUCT), True),
         StructField("production_countries", ArrayType(COUNTRY_STRUCT), True),
         StructField("spoken_languages", ArrayType(LANGUAGE_STRUCT), True),
+        # Credits Field
+        StructField("credits",ArrayType(CREDITS_STRUCT), True),
 
         # Fields kept for completeness
         StructField("adult", BooleanType(), True),
