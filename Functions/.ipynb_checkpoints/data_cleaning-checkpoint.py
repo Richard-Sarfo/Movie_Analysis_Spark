@@ -1,151 +1,130 @@
-"""
-Data Cleaning Module
-Handles data cleaning and preprocessing operations
-"""
-from pyspark.sql.functions import (
-    col, when, round as _round, sum as _sum
-)
-from pyspark.sql.types import IntegerType, FloatType, DateType
+import json
+from pyspark.sql.functions import udf, col, regexp_replace
+from pyspark.sql.types import StringType, ArrayType
 
-class TMDBDataCleaner:
-    """Class to handle data cleaning operations"""
+# UDF to extract value by key from JSON/dict (WITH key parameter)
+@udf(StringType())
+def extract_name(data, key):
+    """Parse JSON/dict and extract value by key, returning None if invalid."""
+    if data is None or data == '':
+        return None
     
-    def __init__(self, df):
-        """Initialize with Spark DataFrame"""
-        self.df = df
+    try:
+        # If data is a string, parse it as JSON
+        if isinstance(data, str):
+            data = json.loads(data)
+        
+        # If data is a Row-like object, convert to dict
+        if hasattr(data, 'asDict'):
+            data = data.asDict()
+
+        # If data is a dict, get the specified key
+        if isinstance(data, dict):
+            # key may be passed as bytes/other; ensure it's a string
+            try:
+                k = key if isinstance(key, str) else str(key)
+            except:
+                k = key
+            value = data.get(k)
+            # Return as string for nested objects/lists
+            return json.dumps(value) if value is not None else None
+    except:
+        return None
     
-    def convert_datatypes(self):
-        """Convert columns to appropriate datatypes"""
-        print("\n🔧 Converting datatypes...")
-        
-        self.df = self.df.withColumn("budget", col("budget").cast(IntegerType())) \
-                   .withColumn("revenue", col("revenue").cast(IntegerType())) \
-                   .withColumn("runtime", col("runtime").cast(IntegerType())) \
-                   .withColumn("vote_count", col("vote_count").cast(IntegerType())) \
-                   .withColumn("vote_average", col("vote_average").cast(FloatType())) \
-                   .withColumn("popularity", col("popularity").cast(FloatType())) \
-                   .withColumn("id", col("id").cast(IntegerType()))
-        
-        # Convert release_date to date type
-        self.df = self.df.withColumn("release_date", 
-                           when(col("release_date").isNotNull(), 
-                                col("release_date").cast(DateType()))
-                           .otherwise(None))
-        
-        return self
+    return None
+
+# UDF to extract 'name' values from a list of dictionaries
+@udf(ArrayType(StringType()))
+def extract_data(data):
+    """Extract 'name' values from a list of dictionaries."""
+    if data is None:
+        return None
+    try:
+        # If data is string, parse it
+        if isinstance(data, str):
+            data = json.loads(data)
+        # Extract names from list of dicts
+        if isinstance(data, list):
+            names = []
+            for d in data:
+                # If element is Row-like, convert to dict
+                if hasattr(d, 'asDict'):
+                    d = d.asDict()
+                if isinstance(d, dict) and "name" in d:
+                    names.append(d.get("name"))
+            return names
+    except:
+        return None
+    return None
+
+# UDF to extract director name from credits
+@udf(StringType())
+def get_director(credits):
+    """Return the director's name from credits dict, or None if not found."""
+    if credits is None:
+        return None
     
-    def handle_unrealistic_values(self):
-        """Replace unrealistic values with NaN"""
-        print("🔧 Handling unrealistic values...")
+    try:
+        # Parse if string
+        if isinstance(credits, str):
+            credits = json.loads(credits)
         
-        # Replace 0 values with NaN for budget, revenue, runtime
-        self.df = self.df.withColumn("budget", 
-                            when(col("budget") == 0, None).otherwise(col("budget"))) \
-                   .withColumn("revenue", 
-                            when(col("revenue") == 0, None).otherwise(col("revenue"))) \
-                   .withColumn("runtime", 
-                            when(col("runtime") == 0, None).otherwise(col("runtime")))
-        
-        return self
+        # If credits is Row-like, convert to dict
+        if hasattr(credits, 'asDict'):
+            credits = credits.asDict()
+
+        # Get crew list
+        crew = credits.get('crew', []) if isinstance(credits, dict) else []
+
+        # Find director
+        for person in crew:
+            # Convert Row-like person to dict
+            if hasattr(person, 'asDict'):
+                person = person.asDict()
+            if isinstance(person, dict) and person.get('job') == 'Director':
+                return person.get('name')
+    except:
+        return None
     
-    def convert_to_millions(self):
-        """Convert budget and revenue to millions USD"""
-        print("🔧 Converting to millions USD...")
-        
-        self.df = self.df.withColumn("budget_musd", _round(col("budget") / 1000000, 2)) \
-                   .withColumn("revenue_musd", _round(col("revenue") / 1000000, 2))
-        
-        return self
+    return None
+
+@udf(ArrayType(StringType()))
+def extract_cast_crew(data, key="name"):
+    """
+    Extracts the value of the specified key from a dictionary or a list of dictionaries.
+
+    Parameters:
+        data (dict or list): A single dictionary or a list of dictionaries.
+        key (str): The key to extract (default is "name").
+
+    Returns:
+        str or list: The extracted name(s). Returns None if key not found in a dict.
+    """
+    if isinstance(data, dict):
+        return data.get(key, None)
+    elif isinstance(data, list):
+        return [item.get(key, None) for item in data if isinstance(item, dict)]
+    else:
+        return None
+
+# Function to clean column data
+def separate_data(df, column):
+    """Clean column by removing brackets/quotes and replacing commas with pipes."""    
+    df = df.withColumn(
+        column,
+        regexp_replace(col(column).cast("string"), r"\[", "")
+    )
+    df = df.withColumn(
+        column,
+        regexp_replace(col(column), r"\]", "")
+    )
+    df = df.withColumn(
+        column,
+        regexp_replace(col(column), ",", "|")
+    )
+    df = df.withColumn(
+        column,
+        regexp_replace(col(column), "'", "")
+    )
     
-    def handle_vote_data(self):
-        """Handle vote_average for movies with vote_count = 0"""
-        print("🔧 Handling vote data...")
-        
-        self.df = self.df.withColumn("vote_average", 
-                           when((col("vote_count") == 0) | (col("vote_count").isNull()), None)
-                           .otherwise(col("vote_average")))
-        
-        return self
-    
-    def handle_text_placeholders(self):
-        """Replace placeholders in text fields"""
-        print("🔧 Handling text placeholders...")
-        
-        self.df = self.df.withColumn("overview", 
-                           when(col("overview").isin(["No Data", "", "N/A"]), None)
-                           .otherwise(col("overview"))) \
-                   .withColumn("tagline", 
-                           when(col("tagline").isin(["No Data", "", "N/A"]), None)
-                           .otherwise(col("tagline")))
-        
-        return self
-    
-    def remove_duplicates(self):
-        """Remove duplicate rows"""
-        print("🔧 Removing duplicates...")
-        
-        initial_count = self.df.count()
-        self.df = self.df.dropDuplicates(["id"])
-        final_count = self.df.count()
-        
-        print(f"   Removed {initial_count - final_count} duplicates")
-        
-        return self
-    
-    def filter_valid_rows(self):
-        """Filter rows with valid id and title"""
-        print("🔧 Filtering valid rows...")
-        
-        # Drop rows with unknown id or title
-        self.df = self.df.filter(col("id").isNotNull() & col("title").isNotNull())
-        
-        # Keep only rows with at least 10 non-null values
-        column_count = len(self.df.columns)
-        non_null_count = _sum([when(col(c).isNotNull(), 1).otherwise(0) for c in self.df.columns])
-        self.df = self.df.withColumn("non_null_count", non_null_count)
-        self.df = self.df.filter(col("non_null_count") >= 10).drop("non_null_count")
-        
-        return self
-    
-    def filter_released_movies(self):
-        """Filter only released movies"""
-        print("🔧 Filtering released movies...")
-        
-        self.df = self.df.filter(col("status") == "Released").drop("status")
-        
-        return self
-    
-    def reorder_columns(self):
-        """Reorder columns to final structure"""
-        print("🔧 Reordering columns...")
-        
-        final_columns = ['id', 'title', 'tagline', 'release_date', 'genres', 
-                        'belongs_to_collection', 'original_language', 'budget_musd', 
-                        'revenue_musd', 'production_companies', 'production_countries', 
-                        'vote_count', 'vote_average', 'popularity', 'runtime', 'overview', 
-                        'spoken_languages', 'poster_path', 'cast', 'cast_size', 
-                        'director', 'crew_size']
-        
-        self.df = self.df.select(final_columns)
-        
-        return self
-    
-    def clean_all(self):
-        """Execute all cleaning steps"""
-        print("\n" + "="*70)
-        print("CLEANING DATA")
-        print("="*70)
-        
-        self.convert_datatypes() \
-            .handle_unrealistic_values() \
-            .convert_to_millions() \
-            .handle_vote_data() \
-            .handle_text_placeholders() \
-            .remove_duplicates() \
-            .filter_valid_rows() \
-            .filter_released_movies() \
-            .reorder_columns()
-        
-        print(f"\n✓ Cleaning complete! Final shape: {self.df.count()} rows, {len(self.df.columns)} columns")
-        
-        return self.df
+    return df
