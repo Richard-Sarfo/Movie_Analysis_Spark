@@ -88,24 +88,70 @@ def get_director(credits):
     
     return None
 
-@udf(ArrayType(StringType()))
-def extract_cast_crew(data, key="name"):
-    """
-    Extracts the value of the specified key from a dictionary or a list of dictionaries.
+@udf(StringType())
+def get_crew_names(credits):
+    """Return a list of all crew members' names from credits dict, or empty list if not found."""
+    if credits is None:
+        return []
+    
+    try:
+        # Parse if string
+        if isinstance(credits, str):
+            credits = json.loads(credits)
+        
+        # If credits is Row-like, convert to dict
+        if hasattr(credits, 'asDict'):
+            credits = credits.asDict()
 
-    Parameters:
-        data (dict or list): A single dictionary or a list of dictionaries.
-        key (str): The key to extract (default is "name").
+        # Get crew list
+        crew = credits.get('crew', []) if isinstance(credits, dict) else []
 
-    Returns:
-        str or list: The extracted name(s). Returns None if key not found in a dict.
-    """
-    if isinstance(data, dict):
-        return data.get(key, None)
-    elif isinstance(data, list):
-        return [item.get(key, None) for item in data if isinstance(item, dict)]
-    else:
-        return None
+        # Extract all crew names
+        crew_names = []
+        for person in crew:
+            # Convert Row-like person to dict
+            if hasattr(person, 'asDict'):
+                person = person.asDict()
+            if isinstance(person, dict) and person.get('name'):
+                crew_names.append(person.get('name'))
+        
+        return crew_names
+    except:
+        return []
+    
+    return []
+@udf(StringType())
+def get_cast_names(credits):
+    """Return a list of all cast members' names from credits dict, or empty list if not found."""
+    if credits is None:
+        return []
+    
+    try:
+        # Parse if string
+        if isinstance(credits, str):
+            credits = json.loads(credits)
+        
+        # If credits is Row-like, convert to dict
+        if hasattr(credits, 'asDict'):
+            credits = credits.asDict()
+
+        # Get cast list
+        cast = credits.get('cast', []) if isinstance(credits, dict) else []
+
+        # Extract all cast names
+        cast_names = []
+        for person in cast:
+            # Convert Row-like person to dict
+            if hasattr(person, 'asDict'):
+                person = person.asDict()
+            if isinstance(person, dict) and person.get('name'):
+                cast_names.append(person.get('name'))
+        
+        return cast_names
+    except:
+        return []
+    
+    return []
 
 # Function to clean column data
 def separate_data(df, column):

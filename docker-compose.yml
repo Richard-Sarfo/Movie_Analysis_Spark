@@ -1,6 +1,6 @@
 services:
   pyspark:
-    image: jupyter/pyspark-notebook:x86_64-ubuntu-22.04
+    build: .
     container_name: pyspark
     ports:
       - "8888:8888" 
@@ -11,8 +11,8 @@ services:
     #   - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
     #   - SPARK_SSL_ENABLED=no
     volumes:
-      - ./etl:/home/jovyan/etl
-      - ./Functions:/home/jovyan/Functions
+      - ./etl:/opt/spark/etl
+      - ./Functions:/opt/spark/Functions
       
     env_file:
       - .env
