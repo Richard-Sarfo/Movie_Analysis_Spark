@@ -1,6 +1,29 @@
 import json
+import logging
 from pyspark.sql.functions import udf, col, regexp_replace
 from pyspark.sql.types import StringType, ArrayType
+
+# Configure logger for data cleaning module
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# Create console handler with formatting
+if not logger.handlers:
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+    
+    # Create file handler for persistent logs
+    file_handler = logging.FileHandler('data_cleaning.log')
+    file_handler.setLevel(logging.DEBUG)
+    
+    # Create formatter
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    console_handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
+    
+    # Add handlers to logger
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
 
 # UDF to extract value by key from JSON/dict (WITH key parameter)
 @udf(StringType())
