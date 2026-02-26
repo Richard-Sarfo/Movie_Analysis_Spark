@@ -1,0 +1,54 @@
+2026-02-26 11:04:38,038 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 299534 from https://api.themoviedb.org/3
+2026-02-26 11:04:38,720 - Functions.data_extraction - INFO - Successfully fetched movie ID: 299534
+2026-02-26 11:04:38,726 - Functions.data_extraction - DEBUG - Session closed for movie ID: 299534
+2026-02-26 11:04:38,728 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 19995 from https://api.themoviedb.org/3
+2026-02-26 11:04:39,350 - Functions.data_extraction - INFO - Successfully fetched movie ID: 19995
+2026-02-26 11:04:39,355 - Functions.data_extraction - DEBUG - Session closed for movie ID: 19995
+2026-02-26 11:04:39,356 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 140607 from https://api.themoviedb.org/3
+2026-02-26 11:04:39,872 - Functions.data_extraction - INFO - Successfully fetched movie ID: 140607
+2026-02-26 11:04:39,875 - Functions.data_extraction - DEBUG - Session closed for movie ID: 140607
+2026-02-26 11:04:39,876 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 299536 from https://api.themoviedb.org/3
+2026-02-26 11:04:40,495 - Functions.data_extraction - INFO - Successfully fetched movie ID: 299536
+2026-02-26 11:04:40,501 - Functions.data_extraction - DEBUG - Session closed for movie ID: 299536
+2026-02-26 11:04:40,502 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 597 from https://api.themoviedb.org/3
+2026-02-26 11:04:41,017 - Functions.data_extraction - INFO - Successfully fetched movie ID: 597
+2026-02-26 11:04:41,020 - Functions.data_extraction - DEBUG - Session closed for movie ID: 597
+2026-02-26 11:04:41,022 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 135397 from https://api.themoviedb.org/3
+2026-02-26 11:04:41,532 - Functions.data_extraction - INFO - Successfully fetched movie ID: 135397
+2026-02-26 11:04:41,535 - Functions.data_extraction - DEBUG - Session closed for movie ID: 135397
+2026-02-26 11:04:41,536 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 420818 from https://api.themoviedb.org/3
+2026-02-26 11:04:42,007 - Functions.data_extraction - INFO - Successfully fetched movie ID: 420818
+2026-02-26 11:04:42,012 - Functions.data_extraction - DEBUG - Session closed for movie ID: 420818
+2026-02-26 11:04:42,017 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 24428 from https://api.themoviedb.org/3
+2026-02-26 11:04:42,602 - Functions.data_extraction - INFO - Successfully fetched movie ID: 24428
+2026-02-26 11:04:42,608 - Functions.data_extraction - DEBUG - Session closed for movie ID: 24428
+2026-02-26 11:04:42,610 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 168259 from https://api.themoviedb.org/3
+2026-02-26 11:04:43,121 - Functions.data_extraction - INFO - Successfully fetched movie ID: 168259
+2026-02-26 11:04:43,123 - Functions.data_extraction - DEBUG - Session closed for movie ID: 168259
+2026-02-26 11:04:43,125 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 99861 from https://api.themoviedb.org/3
+2026-02-26 11:04:43,674 - Functions.data_extraction - INFO - Successfully fetched movie ID: 99861
+2026-02-26 11:04:43,678 - Functions.data_extraction - DEBUG - Session closed for movie ID: 99861
+2026-02-26 11:04:43,679 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 284054 from https://api.themoviedb.org/3
+2026-02-26 11:04:44,195 - Functions.data_extraction - INFO - Successfully fetched movie ID: 284054
+2026-02-26 11:04:44,198 - Functions.data_extraction - DEBUG - Session closed for movie ID: 284054
+2026-02-26 11:04:44,200 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 12445 from https://api.themoviedb.org/3
+2026-02-26 11:04:44,647 - Functions.data_extraction - INFO - Successfully fetched movie ID: 12445
+2026-02-26 11:04:44,649 - Functions.data_extraction - DEBUG - Session closed for movie ID: 12445
+2026-02-26 11:04:44,651 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 181808 from https://api.themoviedb.org/3
+2026-02-26 11:04:45,146 - Functions.data_extraction - INFO - Successfully fetched movie ID: 181808
+2026-02-26 11:04:45,150 - Functions.data_extraction - DEBUG - Session closed for movie ID: 181808
+2026-02-26 11:04:45,152 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 330457 from https://api.themoviedb.org/3
+2026-02-26 11:04:45,603 - Functions.data_extraction - INFO - Successfully fetched movie ID: 330457
+2026-02-26 11:04:45,605 - Functions.data_extraction - DEBUG - Session closed for movie ID: 330457
+2026-02-26 11:04:45,606 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 351286 from https://api.themoviedb.org/3
+2026-02-26 11:04:46,094 - Functions.data_extraction - INFO - Successfully fetched movie ID: 351286
+2026-02-26 11:04:46,098 - Functions.data_extraction - DEBUG - Session closed for movie ID: 351286
+2026-02-26 11:04:46,099 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 109445 from https://api.themoviedb.org/3
+2026-02-26 11:04:46,595 - Functions.data_extraction - INFO - Successfully fetched movie ID: 109445
+2026-02-26 11:04:46,600 - Functions.data_extraction - DEBUG - Session closed for movie ID: 109445
+2026-02-26 11:04:46,603 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 321612 from https://api.themoviedb.org/3
+2026-02-26 11:04:47,113 - Functions.data_extraction - INFO - Successfully fetched movie ID: 321612
+2026-02-26 11:04:47,117 - Functions.data_extraction - DEBUG - Session closed for movie ID: 321612
+2026-02-26 11:04:47,119 - Functions.data_extraction - DEBUG - Fetching movie data for ID: 260513 from https://api.themoviedb.org/3
+2026-02-26 11:04:47,635 - Functions.data_extraction - INFO - Successfully fetched movie ID: 260513
+2026-02-26 11:04:47,640 - Functions.data_extraction - DEBUG - Session closed for movie ID: 260513

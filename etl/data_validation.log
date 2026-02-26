@@ -1,0 +1,5 @@
+2026-02-26 10:59:40,125 - Functions.data_validation - INFO - Schema validation PASSED.
+2026-02-26 10:59:40,529 - Functions.data_validation - INFO - Null validation PASSED for columns: ['id', 'title']
+2026-02-26 10:59:41,438 - Functions.data_validation - INFO - Value range validation PASSED.
+2026-02-26 10:59:41,918 - Functions.data_validation - INFO - Duplicate validation PASSED — 18 unique rows.
+2026-02-26 10:59:41,924 - Functions.data_validation - INFO - Validation summary: 4/4 checks passed. Overall: PASSED
